@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from "react-redux";
+import * as actionTypes from './store/actionCreators';
 import Slider from "../../components/slider";
 import RecommendList from '../../components/list';
 import { Content } from './style'
