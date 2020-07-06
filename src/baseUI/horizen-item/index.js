@@ -18,6 +18,7 @@ const List = styled.div`
     vertical-align: middle;
   }
 `
+
 const ListItem = styled.span`
   flex: 0 0 auto;
   font-size: ${style ["font-size-m"]};
@@ -30,11 +31,16 @@ const ListItem = styled.span`
   }
   `
 
+  
+
 function Horizen(props) {
     const [refreshCategoryScroll, setRefreshCategoryScroll] = useState(false);
     const Category = useRef(null);
     const { list, oldVal, title } = props;
     const { handleClick } = props;
+  
+  
+  
 
     useEffect(() => {
         let categoryDOM = Category.current;
