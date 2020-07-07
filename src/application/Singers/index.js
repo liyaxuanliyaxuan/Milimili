@@ -1,23 +1,11 @@
 import React, { Component } from 'react';
 import Horizen from '../../baseUI/horizen-item';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { categoryTypes, alphaTypes } from '../../api/config';
 import { NavContainer, List, ListItem, ListContainer } from "./style";
 import  Scroll  from '../../baseUI/scroll/index';
-
-
-
-import{
-  getSingerList, 
-  getHotSingerList, 
-  changeEnterLoading, 
-  changePageCount, 
-  refreshMoreSingerList, 
-  changePullUpLoading, 
-  changePullDownLoading, 
-  refreshMoreHotSingerList 
-  
-}from './store/actionCreators';
+import  LazyLoad, {forceCheck} from 'react-lazyload';
+import { getSingerList, changeCategory, changeAlpha, getHotSingerList, changeListOffset, refreshMoreSingerList, changePullUpLoading,changePullDownLoading, refreshMoreHotSingerList } from './store/actionCreators';
 import {connect} from 'react-redux';
 //
 const singerList = [1, 2,3, 4,5,6,7,8,9,10,11,12].map (item => {
@@ -36,74 +24,108 @@ const mapStateToProps = (state) => ({
 });
 const mapDispatchToProps = (dispatch) => {
   return {
-    getHotSingerDispatch() {
+    getHotSinger() {
       dispatch(getHotSingerList());
     },
-    updateDispatch(category, alpha) {
-      dispatch(changePageCount(0));//由于改变了分类，所以pageCount清零
-      dispatch(changeEnterLoading(true));//loading，现在实现控制逻辑，效果实现放到下一节，后面的loading同理
-      dispatch(getSingerList(category, alpha));
+    updateCategory(newVal) {
+      dispatch(changeCategory(newVal));
+      dispatch(getSingerList());
+    },
+    updateAlpha(newVal) {
+      dispatch(changeAlpha(newVal));
+      dispatch(getSingerList());
     },
     // 滑到最底部刷新部分的处理
-    pullUpRefreshDispatch(category, alpha, hot, count) {
+    pullUpRefresh(hot, count) {
       dispatch(changePullUpLoading(true));
-      dispatch(changePageCount(count+1));
       if(hot){
         dispatch(refreshMoreHotSingerList());
       } else {
-        dispatch(refreshMoreSingerList(category, alpha));
+        dispatch(refreshMoreSingerList());
       }
     },
     //顶部下拉刷新
-    pullDownRefreshDispatch(category, alpha) {
+    pullDownRefresh(category, alpha) {
       dispatch(changePullDownLoading(true));
-      dispatch(changePageCount(0));//属于重新获取数据
+      dispatch(changeListOffset(0));
       if(category === '' && alpha === ''){
         dispatch(getHotSingerList());
       } else {
-        dispatch(getSingerList(category, alpha));
+        dispatch(getSingerList());
       }
     }
   }
 };   
 
-const renderSingerList = () => {
-  return (
-    <List>
-      {
-        singerList.map ((item, index) => {
-          return (
-            <ListItem key={item.accountId+""+index}>
-              <div className="img_wrapper">
-                <img src={`${item.picUrl}?param=300x300`} width="100%" height="100%" alt="music"/>
-              </div>
-              <span className="name">{item.name}</span>
-            </ListItem>
-          )
-        })
-      }
-    </List>
-  )
-};
+
 
 function Singers (props){
-  let [category, setCategory] = useState ('');
-  let [alpha, setAlpha] = useState ('');
+ 
+  const scrollRef = useRef(null);
 
-  let handleUpdateAlpha = (val) => {
-    setAlpha (val);
-  }
+  const { singerList, category, alpha, pageCount, songsCount, pullUpLoading, pullDownLoading, enterLoading } = props;
 
-  let handleUpdateCatetory = (val) => {
-    setCategory (val);
-  }
+  const { getHotSinger, updateCategory, updateAlpha, pullUpRefresh, pullDownRefresh } = props;
+
+  useEffect(() => {
+    if(!singerList.length && !category && !alpha) {
+      getHotSinger();
+    }
+    // eslint-disable-next-line
+  }, []);
+
+  const enterDetail = (id)  => {
+    props.history.push(`/singers/${id}`);
+  };
+
+  const handlePullUp = () => {
+    pullUpRefresh(category === '', pageCount);
+  };
+
+  const handlePullDown = () => {
+    pullDownRefresh(category, pageCount);
+  };
+
+  const handleUpdateCategory = (newVal) => {
+    if(category === newVal) return;
+    updateCategory(newVal);
+    scrollRef.current.refresh();
+  };
+
+  const handleUpdateAlpha = (newVal) => {
+    if(alpha === newVal) return;
+    updateAlpha(newVal);
+    scrollRef.current.refresh();
+  };
+  const renderSingerList = () => {
+    const {singerList} = props;
+
+    return (
+      <List>
+        {
+          singerList.toJS().map((item, index) => {
+            return (
+              <ListItem key={item.accountId+""+index} onClick={() => enterDetail(item.id)}>
+                <div className="img_wrapper">
+                  {/* <LazyLoad placeholder={<img width="100%" height="100%" src={require('./singer.png')} alt="music"/>}>
+                    <img src={`${item.picUrl}?param=300x300`} width="100%" height="100%" alt="music"/>
+                  </LazyLoad> */}
+                </div>
+                <span className="name">{item.name}</span>
+              </ListItem>
+            )
+          })
+        }
+      </List>
+    )
+  };
     return(
       <div>
       <NavContainer>
       <Horizen 
         list={categoryTypes} 
         title={"分类 (默认热门):"} 
-        handleClick={handleUpdateCatetory} 
+        handleClick={handleUpdateCategory} 
         oldVal={category}></Horizen>
       <Horizen 
         list={alphaTypes} 
@@ -113,7 +135,7 @@ function Singers (props){
     </NavContainer>
         <ListContainer>
         <Scroll>
-          { renderSingerList () }
+          { renderSingerList() }
         </Scroll>
       </ListContainer>
       </div>
