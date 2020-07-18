@@ -23,7 +23,13 @@ export default [
             },
             {
                 path:'/recommend',
-                component:Recommend
+                component:Recommend,
+                routes:[
+                  {
+                      path: '/recommend/:id',
+                      component: Ablum
+                  }
+                ]
             },
             {
                 path:'/rank',
