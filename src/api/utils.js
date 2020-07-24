@@ -18,3 +18,16 @@ export const filterIndex = rankList => {
     }
   }
 };
+
+//处理歌手列表，拼接歌手名字
+export const getName = list =>{
+  let str = '';
+  list.map((item, index)=>{
+    str += index === 0 ? item.name : '/' + item.name;
+    return item;
+  });
+  return str;
+}
+
+//非空数据判断
+export const isEmptyObject = obj => !obj || Object.keys(obj).length === 0;
