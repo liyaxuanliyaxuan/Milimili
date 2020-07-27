@@ -62,6 +62,10 @@ function Rank (props){
       </SongList>
     ) : null;
   }
+
+  const renderDetail = (detail) => {
+    props.history.push(`/rank/${id}`);
+  }
   
   // 榜单数据未加载出来之前都给隐藏
   let displayStyle = loading ? {"display":"none"}:  {"display": ""};

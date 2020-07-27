@@ -19,7 +19,13 @@ export default [
             },
             {
                 path:'/singers',
-                component: Singers
+                component: Singers,
+                routes: [
+                    {
+                      path: "/singers/:id",
+                      component: Singer
+                    }
+                  ]
             },
             {
                 path:'/recommend',
@@ -32,8 +38,15 @@ export default [
                 ]
             },
             {
-                path:'/rank',
-                component: Rank
+                path:'/rank/',
+                component: Rank,
+                key: "rank",
+                routes: [
+                    {
+                        path: "/rank/:id",
+                        component: Album
+                    }
+                ]
             }
         ]
     }
