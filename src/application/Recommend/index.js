@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2020-05-12 09:58:34
+ * @LastEditTime: 2020-11-11 11:55:46
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \web_front_prj\musicApp\music-app\src\application\Recommend\index.js
+ */
 import React, { Component, useEffect } from 'react';
 import { connect } from "react-redux";
 import { forceCheck } from 'react-lazyload';
@@ -7,6 +15,8 @@ import RecommendList from '../../components/list';
 import { Content } from './style'
 import Loading from '../../baseUI/loading/index';
 import { renderRoutes } from 'react-router-dom';
+
+
 
 import Scroll from '../../baseUI/scroll'
 function Recommend(props) {
@@ -39,7 +49,7 @@ function Recommend(props) {
         </div>
       </Scroll>
       { enterLoading?<Loading></Loading>: null}
-      { renderRoutes(props.route.routes)}
+      {/* { renderRoutes(props.route.routes)} */}
     </Content>
   )
 }

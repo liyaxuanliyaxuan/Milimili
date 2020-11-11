@@ -9,9 +9,9 @@ import {
   SongList,
   Container
 } from './style';
-import { EnterLoading } from './../Singers/style';
+//import { EnterLoading } from './../Singers/style';
 import { filterIndex } from '../../api/utils';
-import { renderRoutes } from 'react-router-config';
+// import { renderRoutes } from 'react-router-dom';
 
 
 function Rank (props){
@@ -78,10 +78,10 @@ function Rank (props){
             { renderRankList (officialList) }
           <h1 className="global" style={displayStyle}> 全球榜 </h1>
             { renderRankList (globalList, true) }
-          { loading ? <EnterLoading><Loading></Loading></EnterLoading> : null }
+          {/* { loading ? <EnterLoading><Loading></Loading></EnterLoading> : null } */}
         </div>
       </Scroll> 
-      {renderRoutes (props.route.routes)}
+      {/* {renderRoutes (props.route.routes)} */}
     </Container>
     );
 }

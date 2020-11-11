@@ -138,7 +138,7 @@ function Singers (props){
           { renderSingerList() }
         </Scroll>
       </ListContainer>
-      { renderRoutes (props.route.routes) }
+      {/* { renderRoutes (props.route.routes) } */}
       </div>
         )
 }
